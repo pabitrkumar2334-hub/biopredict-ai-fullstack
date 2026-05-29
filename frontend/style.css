@@ -986,6 +986,12 @@ input[type="file"] {
   transform: none;
 }
 
+/* Hide developer-only backend console from the public UI. */
+.display-terminal,
+#terminal-log {
+  display: none !important;
+}
+
 @media (max-width: 640px) {
   .form-grid {
     grid-template-columns: 1fr;
