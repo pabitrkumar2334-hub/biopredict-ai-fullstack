@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BioPredict AI - 3D blood-report disease risk prediction for diabetes, heart, liver, and kidney screening.">
+  <title>BioPredict AI | 3D Blood Report Disease Risk Intelligence</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <div id="webgl-canvas" aria-hidden="true"></div>
+
+  <header>
+    <a href="#" class="logo" id="header-logo">
+      <div class="logo-helix"></div>
+      BioPredict <span>AI</span>
+    </a>
+    <nav aria-label="Main Navigation">
+      <a href="#features" id="nav-features">Disease Modules</a>
+      <a href="#playground" id="nav-playground">Predict</a>
+      <a href="#metrics" id="nav-metrics">Workflow</a>
+      <div class="status-badge" id="nav-status">
+        <div class="status-pulse"></div>
+        ML API Online
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero" class="hero-section" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <div class="hero-tag" id="hero-tagline-badge">Blood Report Disease Intelligence</div>
+        <h1 id="hero-title">
+          Predict organ-level
+          <span>disease risk with AI</span>
+        </h1>
+        <p class="hero-desc">
+          Upload a hospital blood report or enter biomarkers manually. BioPredict AI extracts values,
+          runs trained ML models, visualizes risk patterns, and generates a downloadable PDF report.
+        </p>
+        <div class="hero-actions">
+          <a href="#playground" class="btn btn-primary" id="hero-cta-primary">Run Prediction</a>
+          <a href="#features" class="btn btn-secondary" id="hero-cta-secondary">Explore Organs</a>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll to Explore</span>
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="metrics" aria-labelledby="metrics-title">
+      <div class="section-header">
+        <span class="section-label">Clinical Workflow</span>
+        <h2 id="metrics-title">From report upload to risk dashboard.</h2>
+        <p class="section-desc">A Streamlit-free full-stack version of your original BioPredict AI project.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="glass-panel stat-card" id="stat-accuracy">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Organ Systems</div>
+          <div class="stat-desc">Pancreas, heart, liver, and kidney screening modules.</div>
+        </div>
+        <div class="glass-panel stat-card" id="stat-genomes">
+          <div class="stat-number">PDF</div>
+          <div class="stat-label">Report Upload</div>
+          <div class="stat-desc">PDF and image OCR extraction for blood reports.</div>
+        </div>
+        <div class="glass-panel stat-card" id="stat-models">
+          <div class="stat-number">ML</div>
+          <div class="stat-label">Trained Models</div>
+          <div class="stat-desc">Uses your existing saved model files from BioPredict AI 1.0.</div>
+        </div>
+        <div class="glass-panel stat-card" id="stat-acceleration">
+          <div class="stat-number">PDF</div>
+          <div class="stat-label">Download Output</div>
+          <div class="stat-desc">Patient-ready AI screening report generated instantly.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" aria-labelledby="features-title">
+      <div class="section-header">
+        <span class="section-label">Disease Modules</span>
+        <h2 id="features-title">Organ-specific ML screening.</h2>
+        <p class="section-desc">Each module focuses on practical disease patterns that can be estimated from blood-report markers.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="glass-panel feature-card" id="feat-pancreas">
+          <div class="feature-icon-wrapper">P</div>
+          <h3 class="feature-title">Pancreas / Diabetes</h3>
+          <p class="feature-desc">Screens fasting glucose, insulin, BMI, age, and family-risk patterns for diabetes risk.</p>
+          <a href="#playground" class="feature-link">Run Diabetes Module &rarr;</a>
+        </div>
+
+        <div class="glass-panel feature-card" id="feat-heart">
+          <div class="feature-icon-wrapper">H</div>
+          <h3 class="feature-title">Heart Disease</h3>
+          <p class="feature-desc">Evaluates cardiac risk using cholesterol, blood pressure, ECG-style inputs, age, and exercise response.</p>
+          <a href="#playground" class="feature-link">Run Heart Module &rarr;</a>
+        </div>
+
+        <div class="glass-panel feature-card" id="feat-liver">
+          <div class="feature-icon-wrapper">L</div>
+          <h3 class="feature-title">Liver Disease</h3>
+          <p class="feature-desc">Checks liver stress patterns from bilirubin, ALT, AST, albumin, protein balance, and age.</p>
+          <a href="#playground" class="feature-link">Run Liver Module &rarr;</a>
+        </div>
+
+        <div class="glass-panel feature-card" id="feat-kidney">
+          <div class="feature-icon-wrapper">K</div>
+          <h3 class="feature-title">Kidney Disease</h3>
+          <p class="feature-desc">Screens kidney risk from creatinine, urea, electrolytes, urine markers, hemoglobin, and BP.</p>
+          <a href="#playground" class="feature-link">Run Kidney Module &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="playground" aria-labelledby="playground-title">
+      <div class="section-header">
+        <span class="section-label">Interactive Prediction Console</span>
+        <h2 id="playground-title">Upload, extract, predict, download.</h2>
+        <p class="section-desc">This panel connects directly to the new Python backend instead of Streamlit.</p>
+      </div>
+
+      <div class="glass-panel playground-container" id="simulation-playground-card">
+        <div class="playground-controls prediction-controls">
+          <div class="form-group">
+            <label for="disease-select">Disease Module</label>
+            <select id="disease-select">
+              <option value="Diabetes">Diabetes / Pancreas</option>
+              <option value="Heart">Heart Disease</option>
+              <option value="Liver">Liver Disease</option>
+              <option value="Kidney">Kidney Disease</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="report-file">Blood Report PDF or Image</label>
+            <input type="file" id="report-file" accept=".pdf,.png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+            <button class="btn btn-secondary" id="extract-report-btn" type="button">Extract Values</button>
+          </div>
+
+          <div class="form-grid" id="biomarker-fields"></div>
+
+          <button class="btn btn-primary" id="run-predict-btn" type="button">Analyse & Predict Risk</button>
+        </div>
+
+        <div class="playground-display" id="visual-panel-display">
+          <div class="display-header">
+            <span class="display-title">Prediction Output</span>
+            <div class="terminal-indicator">
+              <div class="status-pulse"></div>
+              Backend API
+            </div>
+          </div>
+
+          <div class="display-body prediction-output">
+            <div class="risk-summary" id="risk-summary">
+              <span class="empty-state">Choose a module, enter values, then run prediction.</span>
+            </div>
+
+            <div class="chart-box">
+              <svg id="risk-chart-svg" viewBox="0 0 420 220" role="img" aria-label="Biomarker comparison chart"></svg>
+            </div>
+
+            <div class="analysis-table-wrap">
+              <table class="analysis-table" id="analysis-table">
+                <thead>
+                  <tr>
+                    <th>Marker</th>
+                    <th>Value</th>
+                    <th>Range</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <button class="btn btn-secondary" id="download-report-btn" type="button" disabled>Download PDF Report</button>
+
+            <div class="display-terminal" id="terminal-log">
+              <div class="terminal-line success">&gt; [SYSTEM] BioPredict API console ready.</div>
+              <div class="terminal-line">&gt; [SYSTEM] Load models, upload report, or enter biomarkers manually.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" aria-labelledby="cta-title">
+      <div class="glass-panel cta-panel" id="cta-invitation-card">
+        <h2 id="cta-title">BioPredict AI 1.0, rebuilt without Streamlit.</h2>
+        <p>The 3D frontend stays interactive while FastAPI handles trained models, report extraction, risk prediction, and PDF generation.</p>
+        <a href="#playground" class="btn btn-primary" id="cta-submit-btn">Start Screening</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="#" class="logo" id="footer-logo">
+          <div class="logo-helix"></div>
+          BioPredict <span>AI</span>
+        </a>
+        <p>Organ-level AI screening from blood report biomarkers. This tool is for screening support, not diagnosis.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Modules</h4>
+        <ul>
+          <li><a href="#features">Diabetes</a></li>
+          <li><a href="#features">Heart Disease</a></li>
+          <li><a href="#features">Liver Disease</a></li>
+          <li><a href="#features">Kidney Disease</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Outputs</h4>
+        <ul>
+          <li><a href="#playground">Risk Percentage</a></li>
+          <li><a href="#playground">Graphical Analysis</a></li>
+          <li><a href="#playground">PDF Report</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 BioPredict AI. Screening only; consult a qualified physician.</p>
+      <div class="footer-bottom-links">
+        <a href="#playground">Run Prediction</a>
+        <a href="#features">View Modules</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
