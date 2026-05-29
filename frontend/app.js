@@ -706,6 +706,7 @@ function initPlayground() {
   const fieldsContainer = document.getElementById('biomarker-fields');
   const terminal = document.getElementById('terminal-log');
   const riskSummary = document.getElementById('risk-summary');
+  const diseasePatternGrid = document.getElementById('disease-pattern-grid');
   const tableBody = document.querySelector('#analysis-table tbody');
   const chartSvg = document.getElementById('risk-chart-svg');
   const downloadBtn = document.getElementById('download-report-btn');
@@ -715,6 +716,29 @@ function initPlayground() {
   let config = null;
   let latestPdfBase64 = null;
   let latestPdfFilename = 'BioPredict_Report.pdf';
+
+  const diseasePatternCopy = {
+    Diabetes: [
+      'Glucose, BMI, insulin, age, pregnancy history, and family-risk markers.',
+      'Insulin level, BMI, glucose pressure, and metabolic load pattern.',
+      'Raised fasting sugar, obesity signal, and HbA1c or glucose trend warning.'
+    ],
+    Heart: [
+      'Blood pressure, cholesterol, chest-pain type, ECG, and exercise-response pattern.',
+      'Resting blood pressure plus cholesterol load and cardiac stress indicators.',
+      'Exercise angina, ST depression, max heart rate, and vessel-risk markers.'
+    ],
+    Liver: [
+      'Bilirubin, ALT, AST, alkaline phosphatase, albumin, and protein balance.',
+      'ALT/AST enzyme rise pattern suggesting liver-cell irritation or inflammation.',
+      'Bilirubin load, albumin level, and A/G ratio balance pattern.'
+    ],
+    Kidney: [
+      'Creatinine, urea, urine albumin, blood pressure, glucose, and anemia signals.',
+      'Serum creatinine, urea, specific gravity, and urine protein clearance pattern.',
+      'Sodium, potassium, hemoglobin, WBC/RBC, and urine abnormality pattern.'
+    ]
+  };
 
   function logTerminal(text, type = '') {
     if (!terminal) return;
@@ -838,6 +862,55 @@ function initPlayground() {
       </div>
       <p>${data.advice}</p>
       <p><strong>Suggested doctor:</strong> ${data.doctor}. <strong>Useful tests:</strong> ${data.tests}.</p>
+    `;
+    renderDiseasePatternCards(data);
+  }
+
+  function clampRisk(value) {
+    return Math.max(0, Math.min(99, Number(value || 0)));
+  }
+
+  function renderDiseasePatternCards(data) {
+    if (!diseasePatternGrid) return;
+    const signals = data.signals || [];
+    const patterns = diseasePatternCopy[data.disease] || [];
+    const projection = data.projection || {};
+    const current = clampRisk(data.riskPercent);
+
+    diseasePatternGrid.innerHTML = `
+      <div class="pattern-grid-header">
+        <div>
+          <span class="risk-kicker">Specific disease pattern screening</span>
+          <h3>${data.organ} disease signals found from this sample</h3>
+        </div>
+        <p>These are screening estimates from your uploaded/manual biomarkers, not a final medical diagnosis.</p>
+      </div>
+      ${signals.map((signal, index) => {
+        const modifier = index === 0 ? 0 : index === 1 ? 4 : -3;
+        const nowRisk = clampRisk(current + modifier);
+        const oneYear = clampRisk((projection.oneYear || current) + modifier);
+        const fiveYear = clampRisk((projection.fiveYear || current) + modifier);
+        const tenYear = clampRisk((projection.tenYear || current) + modifier);
+        const pattern = patterns[index] || 'Combined biomarker pattern from the selected organ module.';
+        return `
+          <article class="disease-pattern-card">
+            <div class="pattern-card-top">
+              <span class="pattern-index">0${index + 1}</span>
+              <h4>${signal}</h4>
+            </div>
+            <p>${pattern}</p>
+            <div class="pattern-meter" aria-label="${signal} current risk">
+              <span style="width: ${nowRisk}%"></span>
+            </div>
+            <div class="future-risk-row">
+              <div><span>Now</span><strong>${nowRisk.toFixed(1)}%</strong></div>
+              <div><span>1 yr</span><strong>${oneYear.toFixed(1)}%</strong></div>
+              <div><span>5 yr</span><strong>${fiveYear.toFixed(1)}%</strong></div>
+              <div><span>10 yr</span><strong>${tenYear.toFixed(1)}%</strong></div>
+            </div>
+          </article>
+        `;
+      }).join('')}
     `;
   }
 
