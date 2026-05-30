@@ -481,9 +481,9 @@ function buildHeart(glass, wire) {
     opacity: 0.22,
   });
 
-  const heart = addMesh(geometry, heartMaterial, [0, -0.35, 0], [1.38, 1.38, 1.38], [0.08, 0.08, Math.PI]);
-  const glow = addMesh(geometry, glowMaterial, [0, -0.35, 0], [1.46, 1.46, 1.46], [0.08, 0.08, Math.PI]);
-  const veins = addMesh(geometry, veinMaterial, [0, -0.35, 0], [1.47, 1.47, 1.47], [0.08, 0.08, Math.PI]);
+  const heart = addMesh(geometry, heartMaterial, [0, -0.35, 0], [1.38, 1.38, 1.38], [0.08, 0.08, 0]);
+  const glow = addMesh(geometry, glowMaterial, [0, -0.35, 0], [1.46, 1.46, 1.46], [0.08, 0.08, 0]);
+  const veins = addMesh(geometry, veinMaterial, [0, -0.35, 0], [1.47, 1.47, 1.47], [0.08, 0.08, 0]);
 
   pulseTargets.push(heart, glow, veins);
 
