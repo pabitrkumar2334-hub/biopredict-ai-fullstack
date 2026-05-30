@@ -1,0 +1,288 @@
+.organ-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 78% 22%, rgba(var(--organ-rgb, 0, 240, 255), 0.13), transparent 28%),
+    radial-gradient(circle at 18% 72%, rgba(223, 177, 91, 0.08), transparent 28%),
+    #05090c;
+}
+
+#organ-webgl {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.organ-hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+  align-items: center;
+  gap: 4rem;
+  padding: 9rem 7% 6rem;
+  position: relative;
+}
+
+.organ-hero-copy {
+  max-width: 640px;
+  animation: organCopyIn 0.8s ease both;
+}
+
+.organ-hero h1 {
+  font-size: clamp(3rem, 7vw, 6.6rem);
+  line-height: 0.95;
+  max-width: 760px;
+  margin-bottom: 1.4rem;
+}
+
+.organ-hero p {
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.55vw, 1.22rem);
+  max-width: 560px;
+}
+
+.organ-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.organ-stage-card {
+  min-height: 520px;
+  border: 1px solid rgba(var(--organ-rgb, 0, 240, 255), 0.2);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(var(--organ-rgb, 0, 240, 255), 0.18), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 40px 90px rgba(0,0,0,0.42),
+    0 0 80px rgba(var(--organ-rgb, 0, 240, 255), 0.1);
+  backdrop-filter: blur(18px);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.organ-stage-card::before {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border: 1px solid rgba(var(--organ-rgb, 0, 240, 255), 0.16);
+  border-radius: 999px;
+  transform: rotateX(66deg) rotateZ(-18deg);
+  box-shadow: 0 0 42px rgba(var(--organ-rgb, 0, 240, 255), 0.12);
+}
+
+.organ-stage-glow {
+  position: absolute;
+  width: 54%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(var(--organ-rgb, 0, 240, 255), 0.2), transparent 66%);
+  animation: organGlowPulse 3.4s ease-in-out infinite;
+}
+
+.organ-stage-label {
+  position: absolute;
+  left: 28px;
+  bottom: 26px;
+  color: rgba(255,255,255,0.66);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.organ-scroll-indicator {
+  bottom: 3rem;
+}
+
+.organ-story-section,
+.organ-scroll-story,
+.organ-cta {
+  padding: 7rem 7%;
+}
+
+.organ-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.organ-signal-card {
+  min-height: 260px;
+  padding: 1.5rem;
+  border-radius: 22px;
+  border: 1px solid rgba(var(--organ-rgb, 0, 240, 255), 0.18);
+  background:
+    linear-gradient(145deg, rgba(9, 22, 28, 0.74), rgba(5, 9, 14, 0.82)),
+    radial-gradient(circle at 20% 20%, rgba(var(--organ-rgb, 0, 240, 255), 0.08), transparent 34%);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  transform-style: preserve-3d;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.organ-signal-card:hover {
+  transform: translateY(-8px) rotateX(2deg);
+  border-color: rgba(var(--organ-rgb, 0, 240, 255), 0.42);
+  box-shadow: 0 34px 72px rgba(0,0,0,0.42), 0 0 28px rgba(var(--organ-rgb, 0, 240, 255), 0.1);
+}
+
+.organ-signal-card .signal-index {
+  color: var(--organ-tone, var(--accent-cyan));
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.84rem;
+}
+
+.organ-signal-card h3 {
+  margin: 0.8rem 0;
+  font-size: 1.28rem;
+}
+
+.organ-signal-card p {
+  color: var(--text-secondary);
+}
+
+.organ-signal-line {
+  width: 100%;
+  height: 7px;
+  margin-top: 1.4rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+}
+
+.organ-signal-line span {
+  display: block;
+  height: 100%;
+  width: var(--signal-width, 68%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--organ-tone, var(--accent-cyan)), var(--accent-gold));
+  box-shadow: 0 0 16px rgba(var(--organ-rgb, 0, 240, 255), 0.3);
+}
+
+.organ-scroll-story {
+  min-height: 185vh;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+.organ-sticky-copy {
+  position: sticky;
+  top: 9rem;
+}
+
+.organ-sticky-copy h2 {
+  font-size: clamp(2.3rem, 4vw, 4.4rem);
+  line-height: 1;
+  margin-bottom: 1.2rem;
+}
+
+.organ-sticky-copy p {
+  color: var(--text-secondary);
+  font-size: 1.06rem;
+}
+
+.organ-beat-list {
+  display: grid;
+  gap: 34vh;
+  padding: 20vh 0;
+}
+
+.organ-beat-card {
+  padding: 1.4rem;
+  max-width: 520px;
+  border-radius: 18px;
+  border: 1px solid rgba(var(--organ-rgb, 0, 240, 255), 0.18);
+  background: rgba(5, 13, 18, 0.68);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+}
+
+.organ-beat-card span {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--organ-tone, var(--accent-cyan));
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.organ-beat-card h3 {
+  margin-bottom: 0.65rem;
+  font-size: 1.45rem;
+}
+
+.organ-beat-card p {
+  color: var(--text-secondary);
+}
+
+.organ-cta {
+  padding-top: 3rem;
+}
+
+.organ-cta .cta-panel {
+  border-color: rgba(var(--organ-rgb, 0, 240, 255), 0.22);
+}
+
+@keyframes organGlowPulse {
+  0%, 100% { opacity: 0.54; transform: translate(-50%, -50%) scale(0.9); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes organCopyIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 980px) {
+  .organ-hero,
+  .organ-scroll-story {
+    grid-template-columns: 1fr;
+  }
+
+  .organ-stage-card {
+    min-height: 390px;
+  }
+
+  .organ-signal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .organ-sticky-copy {
+    position: relative;
+    top: auto;
+  }
+
+  .organ-beat-list {
+    gap: 2rem;
+    padding: 2rem 0 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .organ-hero {
+    padding: 8rem 5% 5rem;
+  }
+
+  .organ-actions {
+    flex-direction: column;
+  }
+
+  .organ-story-section,
+  .organ-scroll-story,
+  .organ-cta {
+    padding: 5rem 5%;
+  }
+}
