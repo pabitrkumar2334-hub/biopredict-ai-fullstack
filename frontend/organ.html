@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BioPredict AI organ module - immersive 3D disease screening detail page.">
+  <title>BioPredict AI | Organ Module</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="organ.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="organ-page">
+  <div id="organ-webgl" aria-hidden="true"></div>
+
+  <header>
+    <a href="index.html" class="logo">
+      <div class="logo-helix"></div>
+      BioPredict <span>AI</span>
+    </a>
+    <nav aria-label="Organ Module Navigation">
+      <a href="index.html#features">Modules</a>
+      <a href="#signals">Signals</a>
+      <a href="#workflow">Workflow</a>
+      <a href="index.html#playground" id="nav-run-model" class="status-badge">
+        <div class="status-pulse"></div>
+        Run Model
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="organ-hero" aria-labelledby="organ-title">
+      <div class="organ-hero-copy">
+        <div class="hero-tag" id="organ-eyebrow">Organ intelligence</div>
+        <h1 id="organ-title">Organ-level disease module</h1>
+        <p id="organ-summary">
+          Explore a focused BioPredict AI disease module with animated organ visuals, biomarker signals, and direct access to prediction.
+        </p>
+        <div class="organ-actions">
+          <a class="btn btn-primary" id="run-selected-model" href="index.html#playground">Run this model</a>
+          <a class="btn btn-secondary" href="index.html">Back to dashboard</a>
+        </div>
+      </div>
+
+      <div class="organ-stage-card" aria-hidden="true">
+        <div class="organ-stage-glow"></div>
+        <div class="organ-stage-label" id="organ-stage-label">Live organ model</div>
+      </div>
+
+      <div class="scroll-indicator organ-scroll-indicator" aria-hidden="true">
+        <span>Scroll the organ story</span>
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="signals" class="organ-story-section">
+      <div class="section-header">
+        <span class="section-label" id="signals-label">Disease signals</span>
+        <h2 id="signals-title">What this module searches for.</h2>
+        <p class="section-desc" id="signals-desc">The page changes for each selected organ and explains the practical screening pattern.</p>
+      </div>
+
+      <div class="organ-signal-grid" id="organ-signal-grid"></div>
+    </section>
+
+    <section class="organ-scroll-story" id="workflow">
+      <div class="organ-sticky-copy">
+        <span class="section-label">Scroll-linked analysis</span>
+        <h2 id="workflow-title">From biomarkers to risk intelligence.</h2>
+        <p id="workflow-desc">As you scroll, the model view rotates through the organ, marker pathways, and future-risk interpretation.</p>
+      </div>
+
+      <div class="organ-beat-list" id="organ-beat-list"></div>
+    </section>
+
+    <section class="organ-cta">
+      <div class="glass-panel cta-panel">
+        <span class="section-label">Prediction ready</span>
+        <h2 id="cta-organ-title">Run this disease module on your blood report.</h2>
+        <p id="cta-organ-desc">Upload a PDF/image report or enter values manually to generate risk percentage, future projection, graph, table, and PDF report.</p>
+        <a class="btn btn-primary" id="cta-run-selected-model" href="index.html#playground">Open prediction console</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="organ.js"></script>
+</body>
+</html>
