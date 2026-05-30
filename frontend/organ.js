@@ -129,6 +129,105 @@ function setContent() {
       <p>${beat[1]}</p>
     </article>
   `).join('');
+
+  const visual = document.getElementById('anatomy-visual');
+  if (visual) visual.innerHTML = getOrganSvg(selected);
+}
+
+function svgDefs() {
+  return `
+    <defs>
+      <radialGradient id="organBodyGradient" cx="45%" cy="35%" r="68%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.34)" />
+        <stop offset="42%" stop-color="rgba(var(--organ-rgb),0.24)" />
+        <stop offset="100%" stop-color="rgba(var(--organ-rgb),0.04)" />
+      </radialGradient>
+      <linearGradient id="redGlowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="rgba(255,130,150,0.76)" />
+        <stop offset="55%" stop-color="rgba(255,55,78,0.46)" />
+        <stop offset="100%" stop-color="rgba(110,10,30,0.2)" />
+      </linearGradient>
+    </defs>
+  `;
+}
+
+function getOrganSvg(module) {
+  if (module === 'Heart') return heartSvg();
+  if (module === 'Liver') return liverSvg();
+  if (module === 'Kidney') return kidneySvg();
+  return pancreasSvg();
+}
+
+function heartSvg() {
+  return `
+    <svg class="anatomy-svg heart-anatomy" viewBox="0 0 520 460" role="img" aria-label="Animated heart anatomy">
+      ${svgDefs()}
+      <path class="organ-shell" fill="url(#redGlowGradient)" d="M255 405C118 312 86 181 145 111c34-40 86-37 113 3 30-46 96-54 138-14 70 67 35 210-141 305Z"/>
+      <path class="organ-core" d="M248 124c-18 56-20 123-7 203M282 125c25 71 20 141-18 236M165 174c56 0 80 35 84 91M360 164c-59 17-84 55-88 116"/>
+      <path class="organ-vessel" d="M245 116c-2-47 6-72 32-88M286 119c34-44 72-57 111-43M222 122c-18-49-55-72-100-62"/>
+      <path class="organ-vessel" d="M277 28c39 4 69 25 91 56M398 77c34 4 62-8 82-30M122 60c-24 0-48-10-70-31"/>
+      <path class="organ-branch" d="M157 191c52 4 70 33 82 78M370 180c-45 23-67 51-82 91M216 310c-28 24-58 38-93 40M300 313c35 27 73 42 116 40"/>
+      <path class="organ-flow" d="M257 84c18 80 13 169-16 270M300 87c-24 70-17 151 20 244"/>
+      <circle class="organ-node" cx="250" cy="260" r="8"/>
+      <circle class="organ-node" cx="309" cy="229" r="6"/>
+      <circle class="organ-particle" cx="151" cy="253" r="4"/>
+      <circle class="organ-particle" cx="412" cy="244" r="5"/>
+    </svg>
+  `;
+}
+
+function kidneySvg() {
+  return `
+    <svg class="anatomy-svg kidney-anatomy" viewBox="0 0 520 460" role="img" aria-label="Animated kidney anatomy">
+      ${svgDefs()}
+      <path class="organ-shell" d="M256 57c-82 4-148 89-137 192 12 112 94 168 160 139 43-19 44-61 14-91-22-22-31-47-19-76 15-37 64-48 84-86 22-43-24-82-102-78Z"/>
+      <path class="organ-core" d="M282 120c-72 27-105 95-84 163 15 50 59 71 94 52M293 174c-46 8-76 46-66 88 5 22 19 38 39 48"/>
+      <path class="organ-vessel" d="M296 226c75 2 108-31 145-80M294 241c73 17 101 60 133 113"/>
+      <path class="organ-branch" d="M288 220c-31 17-54 43-63 82M306 230c25-9 49-27 73-57M305 249c27 12 53 33 76 66"/>
+      <path class="organ-flow" d="M265 319c24 35 28 68 21 103"/>
+      <circle class="organ-node" cx="278" cy="229" r="8"/>
+      <circle class="organ-node" cx="232" cy="286" r="5"/>
+      <circle class="organ-particle" cx="181" cy="151" r="5"/>
+      <circle class="organ-particle" cx="206" cy="353" r="4"/>
+    </svg>
+  `;
+}
+
+function liverSvg() {
+  return `
+    <svg class="anatomy-svg liver-anatomy" viewBox="0 0 560 430" role="img" aria-label="Animated liver anatomy">
+      ${svgDefs()}
+      <path class="organ-shell" d="M62 246c16-80 102-138 219-151 87-10 164 7 216 46 38 28 24 75-32 99-74 32-111 96-209 99-95 3-105-54-194-47-19 1-28-18 0-46Z"/>
+      <path class="organ-core" d="M160 246c99-71 218-78 323-66M189 294c65-55 112-86 199-102M261 320c16-65 45-103 96-130"/>
+      <path class="organ-vessel" d="M276 305c13-71 42-123 104-168"/>
+      <path class="organ-branch" d="M311 240c-46-27-91-39-137-38M323 224c49-31 98-39 147-28M293 275c-39 24-77 36-118 37M340 263c39 20 76 29 112 29"/>
+      <path class="organ-flow" d="M102 248c101-29 218-39 361-31M152 190c116 31 214 30 296 4"/>
+      <circle class="organ-node" cx="316" cy="236" r="8"/>
+      <circle class="organ-node" cx="381" cy="181" r="5"/>
+      <circle class="organ-particle" cx="455" cy="142" r="6"/>
+      <circle class="organ-particle" cx="489" cy="117" r="4"/>
+      <circle class="organ-particle" cx="421" cy="314" r="5"/>
+    </svg>
+  `;
+}
+
+function pancreasSvg() {
+  return `
+    <svg class="anatomy-svg pancreas-anatomy" viewBox="0 0 560 360" role="img" aria-label="Animated pancreas anatomy">
+      ${svgDefs()}
+      <path class="organ-shell" d="M69 203c27-59 94-88 168-71 52 12 75 42 122 24 70-27 138-7 153 49 14 51-32 95-95 89-58-6-83-42-128-25-76 29-174 48-217-13-12-17-12-34-3-53Z"/>
+      <path class="organ-core" d="M95 214c74-23 145-21 212-3 74 20 128 17 178-14M119 248c70-16 134-16 190 0 53 15 102 16 147-6"/>
+      <path class="organ-vessel" d="M128 182c67 42 121 54 171 39 61-18 104-18 151 10"/>
+      <path class="organ-branch" d="M171 166c-17 31-21 61-12 91M240 170c-10 28-10 57 2 86M344 174c-8 36-4 68 15 96M426 173c11 27 14 55 5 84"/>
+      <path class="organ-flow" d="M103 223c82 7 150 1 207-18 74-25 132-19 177 19"/>
+      <circle class="organ-node" cx="185" cy="211" r="9"/>
+      <circle class="organ-node" cx="273" cy="226" r="7"/>
+      <circle class="organ-node" cx="390" cy="219" r="8"/>
+      <circle class="organ-particle" cx="210" cy="132" r="5"/>
+      <circle class="organ-particle" cx="337" cy="151" r="4"/>
+      <circle class="organ-particle" cx="468" cy="178" r="5"/>
+    </svg>
+  `;
 }
 
 function initOrganWebGL() {
