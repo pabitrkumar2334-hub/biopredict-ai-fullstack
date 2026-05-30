@@ -789,6 +789,10 @@ function initPlayground() {
       const response = await fetch(`${apiBase}/api/config`);
       if (!response.ok) throw new Error(`API returned ${response.status}`);
       config = await response.json();
+      const requestedModule = new URLSearchParams(window.location.search).get('module');
+      if (requestedModule && config.fields?.[requestedModule]) {
+        diseaseSelect.value = requestedModule;
+      }
       renderFields();
       logTerminal('[SYSTEM] Backend API connected.', 'success');
       if (config.modelErrors && Object.keys(config.modelErrors).length) {
