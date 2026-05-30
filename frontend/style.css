@@ -60,6 +60,74 @@ body {
   line-height: 1.6;
 }
 
+/* Premium scroll reveal motion inspired by editorial UI text reveals. */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(0.985);
+  filter: blur(10px);
+  transition:
+    opacity 0.9s cubic-bezier(0.19, 1, 0.22, 1) var(--reveal-delay, 0ms),
+    transform 0.9s cubic-bezier(0.19, 1, 0.22, 1) var(--reveal-delay, 0ms),
+    filter 0.9s cubic-bezier(0.19, 1, 0.22, 1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+.text-reveal-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  max-width: 100%;
+}
+
+.text-reveal-inner {
+  display: inline-block;
+  transform: translate3d(0, 112%, 0);
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1) var(--reveal-delay, 0ms);
+  will-change: transform;
+}
+
+.reveal-on-scroll.is-visible .text-reveal-inner {
+  transform: translate3d(0, 0, 0);
+}
+
+.feature-card.reveal-on-scroll,
+.stat-card.reveal-on-scroll,
+.cta-panel.reveal-on-scroll,
+.playground-container.reveal-on-scroll {
+  transform: translate3d(0, 42px, 0) rotateX(4deg) scale(0.985);
+  transform-origin: 50% 100%;
+}
+
+.feature-card.reveal-on-scroll.is-visible,
+.stat-card.reveal-on-scroll.is-visible,
+.cta-panel.reveal-on-scroll.is-visible,
+.playground-container.reveal-on-scroll.is-visible {
+  transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+}
+
+.glass-panel.reveal-on-scroll.is-visible:hover,
+.feature-card.reveal-on-scroll.is-visible:hover,
+.stat-card.reveal-on-scroll.is-visible:hover,
+.cta-panel.reveal-on-scroll.is-visible:hover {
+  transform: translate3d(0, -4px, 0) rotateX(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .text-reveal-inner {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
 /* WebGL Background Canvas */
 #webgl-canvas {
   position: fixed;
