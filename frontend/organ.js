@@ -84,6 +84,38 @@ const MODULES = {
 const params = new URLSearchParams(window.location.search);
 const selected = MODULES[params.get('module')] ? params.get('module') : 'Diabetes';
 const data = MODULES[selected];
+const HEART_STORY_SECTIONS = [
+  {
+    id: '01',
+    bpm: 72,
+    title: 'A muscle the size of your fist',
+    body: 'It beats roughly 100,000 times a day. In BioPredict AI, the heart module reads blood pressure, cholesterol, age, ECG-style inputs, and exercise response as one cardiac risk story.',
+  },
+  {
+    id: '02',
+    bpm: 76,
+    title: 'Pressure, rhythm, resistance',
+    body: 'Resting blood pressure, ST depression, chest-pain pattern, and vessel indicators become model features, aligned into the same structure used during training.',
+  },
+  {
+    id: '03',
+    bpm: 68,
+    title: 'The model listens for strain',
+    body: 'The trained heart model converts those signals into a probability score, separating low, moderate, and high screening risk.',
+  },
+  {
+    id: '04',
+    bpm: 74,
+    title: 'Risk becomes visible',
+    body: 'The result is shown as disease pattern cards, future watch scores, graph comparison, parameter table, and a downloadable PDF report.',
+  },
+  {
+    id: '05',
+    bpm: 70,
+    title: 'From sample to action',
+    body: 'The page is a screening companion, not a diagnosis. It guides users toward useful follow-up tests and a qualified cardiologist when risk is elevated.',
+  },
+];
 
 let scene, camera, renderer, organGroup, particleGroup;
 let scrollProgress = 0;
@@ -95,6 +127,11 @@ function setContent() {
   document.documentElement.style.setProperty('--organ-tone', data.tone);
   document.documentElement.style.setProperty('--organ-rgb', data.rgb);
   document.title = `BioPredict AI | ${data.organ} Module`;
+
+  if (selected === 'Heart') {
+    renderHeartStoryPage();
+    return;
+  }
 
   document.getElementById('organ-eyebrow').textContent = data.eyebrow;
   document.getElementById('organ-title').textContent = data.title;
@@ -133,6 +170,101 @@ function setContent() {
 
   const visual = document.getElementById('anatomy-visual');
   if (visual) visual.innerHTML = getOrganSvg(selected);
+}
+
+function renderHeartStoryPage() {
+  document.body.classList.add('heart-story-page');
+  const main = document.querySelector('main');
+  const header = document.querySelector('header');
+  if (header) {
+    header.innerHTML = `
+      <a href="index.html" class="heart-hud-brand">
+        <span class="heart-live-dot"></span>
+        <span>BioPredict / Cardiac</span>
+      </a>
+      <nav class="heart-hud-nav" aria-label="Heart Story Navigation">
+        <a href="#story">Anatomy</a>
+        <a href="#rhythm">Rhythm</a>
+        <a href="#you">Prediction</a>
+      </nav>
+      <a class="heart-bpm" id="heart-bpm" href="index.html?module=Heart#playground">
+        <strong>72</strong><span>bpm</span>
+      </a>
+    `;
+  }
+
+  if (!main) return;
+  main.innerHTML = `
+    <aside class="heart-side-progress" aria-hidden="true">
+      ${HEART_STORY_SECTIONS.map((section, index) => `
+        <a href="#heart-section-${index}" class="heart-progress-item" data-index="${index}">
+          <span></span>
+          <b>${section.id}</b>
+        </a>
+      `).join('')}
+    </aside>
+
+    <section class="heart-story-hero">
+      <div class="heart-story-copy">
+        <p class="heart-kicker">An immersive cardiac study / BioPredict AI</p>
+        <h1><span>Anatomy</span> of a<br>Heartbeat</h1>
+        <p class="heart-subcopy">
+          Scroll through a living cardiac model. The body rolls, the heart keeps time,
+          and the model translates biomarkers into disease risk intelligence.
+        </p>
+        <div class="heart-scroll-cue">
+          <span>Scroll</span>
+          <i></i>
+        </div>
+      </div>
+    </section>
+
+    ${HEART_STORY_SECTIONS.map((section, index) => `
+      <section
+        class="heart-story-section ${index % 2 === 0 ? 'align-left' : 'align-right'}"
+        id="${index === 0 ? 'story' : index === 2 ? 'rhythm' : index === 4 ? 'you' : `heart-section-${index}`}"
+        data-index="${index}"
+        data-bpm="${section.bpm}"
+      >
+        <article class="heart-chapter-card">
+          <div>
+            <span>Chapter ${section.id}</span>
+            <b>${section.bpm} bpm</b>
+          </div>
+          <h2>${section.title}</h2>
+          <p>${section.body}</p>
+        </article>
+      </section>
+    `).join('')}
+
+    <section class="heart-story-outro">
+      <div>
+        <p class="heart-kicker">Prediction ready</p>
+        <h2>Run the cardiac model.</h2>
+        <p>
+          Upload a report or enter values manually to generate heart disease risk percentage,
+          pattern cards, graph, table, future projection, and PDF report.
+        </p>
+        <a class="btn btn-primary" href="index.html?module=Heart#playground">Open heart prediction</a>
+      </div>
+    </section>
+  `;
+
+  updateHeartStoryProgress();
+  window.addEventListener('scroll', updateHeartStoryProgress, { passive: true });
+}
+
+function updateHeartStoryProgress() {
+  if (selected !== 'Heart') return;
+  const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
+  const p = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+  const index = Math.min(HEART_STORY_SECTIONS.length - 1, Math.floor(p * HEART_STORY_SECTIONS.length));
+  const bpm = document.getElementById('heart-bpm');
+  if (bpm) bpm.querySelector('strong').textContent = HEART_STORY_SECTIONS[index].bpm;
+
+  document.querySelectorAll('.heart-progress-item').forEach((item, itemIndex) => {
+    item.classList.toggle('active', itemIndex === index);
+  });
 }
 
 function svgDefs() {
