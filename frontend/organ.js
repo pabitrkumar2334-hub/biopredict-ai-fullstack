@@ -170,6 +170,7 @@ function setContent() {
 
   const visual = document.getElementById('anatomy-visual');
   if (visual) visual.innerHTML = getOrganSvg(selected);
+  initOrganScrollReveal();
 }
 
 function renderHeartStoryPage() {
@@ -251,7 +252,81 @@ function renderHeartStoryPage() {
   `;
 
   updateHeartStoryProgress();
+  initOrganScrollReveal();
   window.addEventListener('scroll', updateHeartStoryProgress, { passive: true });
+}
+
+function initOrganScrollReveal(root = document) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealItems = root.querySelectorAll([
+    '.organ-hero-copy',
+    '.organ-stage-card',
+    '.section-label',
+    '.section-header h2',
+    '.section-desc',
+    '.organ-signal-card',
+    '.organ-sticky-copy',
+    '.organ-beat-card',
+    '.organ-cta .cta-panel',
+    '.heart-kicker',
+    '.heart-story-copy h1',
+    '.heart-subcopy',
+    '.heart-scroll-cue',
+    '.heart-chapter-card',
+    '.heart-story-outro > div'
+  ].join(','));
+
+  const textItems = root.querySelectorAll([
+    '.organ-hero-copy h1',
+    '.organ-hero-copy p',
+    '.section-header h2',
+    '.section-desc',
+    '.organ-signal-card h3',
+    '.organ-signal-card p',
+    '.organ-sticky-copy h2',
+    '.organ-sticky-copy p',
+    '.organ-beat-card h3',
+    '.organ-beat-card p',
+    '.heart-story-copy h1',
+    '.heart-subcopy',
+    '.heart-chapter-card h2',
+    '.heart-chapter-card p',
+    '.heart-story-outro h2',
+    '.heart-story-outro p'
+  ].join(','));
+
+  textItems.forEach((el) => {
+    if (el.dataset.revealPrepared === 'true') return;
+    const html = el.innerHTML.trim();
+    if (!html) return;
+    el.innerHTML = `<span class="text-reveal-mask"><span class="text-reveal-inner">${html}</span></span>`;
+    el.dataset.revealPrepared = 'true';
+  });
+
+  revealItems.forEach((el, index) => {
+    if (el.dataset.revealAttached === 'true') return;
+    el.classList.add('reveal-on-scroll');
+    el.style.setProperty('--reveal-delay', `${Math.min(index % 5, 4) * 80}ms`);
+    el.dataset.revealAttached = 'true';
+  });
+
+  if (prefersReducedMotion) {
+    revealItems.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.16,
+    rootMargin: '0px 0px -10% 0px',
+  });
+
+  revealItems.forEach((el) => observer.observe(el));
 }
 
 function updateHeartStoryProgress() {
