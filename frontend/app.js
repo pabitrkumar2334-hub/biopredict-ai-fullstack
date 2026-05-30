@@ -429,7 +429,82 @@ function animate(time) {
 window.addEventListener('DOMContentLoaded', () => {
   initWebGL();
   initPlayground();
+  initScrollReveal();
 });
+
+function initScrollReveal(root = document) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealItems = root.querySelectorAll([
+    '.hero-tag',
+    '.hero-content h1',
+    '.hero-desc',
+    '.hero-actions',
+    '.section-label',
+    '.section-header h2',
+    '.section-desc',
+    '.stat-card',
+    '.feature-card',
+    '.playground-container',
+    '.risk-summary',
+    '.disease-pattern-card',
+    '.chart-box',
+    '.analysis-table-wrap',
+    '.cta-panel',
+    '.footer-brand',
+    '.footer-links'
+  ].join(','));
+
+  const textItems = root.querySelectorAll([
+    '.hero-content h1',
+    '.hero-desc',
+    '.section-header h2',
+    '.section-desc',
+    '.feature-title',
+    '.feature-desc',
+    '.stat-label',
+    '.stat-desc',
+    '.risk-summary p',
+    '.pattern-grid-header h3',
+    '.pattern-grid-header p',
+    '.disease-pattern-card h4',
+    '.disease-pattern-card p',
+    '.cta-panel h2',
+    '.cta-panel p'
+  ].join(','));
+
+  textItems.forEach((el) => {
+    if (el.dataset.revealPrepared === 'true' || el.closest('button, a')) return;
+    const html = el.innerHTML.trim();
+    if (!html) return;
+    el.innerHTML = `<span class="text-reveal-mask"><span class="text-reveal-inner">${html}</span></span>`;
+    el.dataset.revealPrepared = 'true';
+  });
+
+  revealItems.forEach((el, index) => {
+    if (el.dataset.revealAttached === 'true') return;
+    el.classList.add('reveal-on-scroll');
+    el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+    el.dataset.revealAttached = 'true';
+  });
+
+  if (prefersReducedMotion) {
+    revealItems.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.16,
+    rootMargin: '0px 0px -10% 0px',
+  });
+
+  revealItems.forEach((el) => observer.observe(el));
+}
 
 
 /**
@@ -991,6 +1066,7 @@ function initPlayground() {
       renderRiskResult(data);
       renderTable(data.analysisRows);
       renderChart(data.chart);
+      initScrollReveal(riskSummary.parentElement || document);
       latestPdfBase64 = data.pdfBase64;
       latestPdfFilename = data.pdfFilename;
       downloadBtn.disabled = false;
