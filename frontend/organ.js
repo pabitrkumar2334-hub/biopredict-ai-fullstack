@@ -89,6 +89,7 @@ let scene, camera, renderer, organGroup, particleGroup;
 let scrollProgress = 0;
 let mouseX = 0;
 let mouseY = 0;
+let pulseTargets = [];
 
 function setContent() {
   document.documentElement.style.setProperty('--organ-tone', data.tone);
@@ -281,6 +282,7 @@ function initOrganWebGL() {
 }
 
 function buildOrganModel(tone) {
+  pulseTargets = [];
   const glass = new THREE.MeshPhysicalMaterial({
     color: tone,
     transparent: true,
@@ -314,15 +316,107 @@ function addMesh(geometry, material, position, scale, rotation = [0, 0, 0]) {
   mesh.position.set(...position);
   mesh.scale.set(...scale);
   mesh.rotation.set(...rotation);
+  mesh.userData.baseScale = new THREE.Vector3(...scale);
   organGroup.add(mesh);
   return mesh;
 }
 
 function buildHeart(glass, wire) {
-  addMesh(new THREE.SphereGeometry(2.6, 48, 32), glass, [-1, 0.3, 0], [1, 1.22, 0.85], [0.1, 0.1, -0.28]);
-  addMesh(new THREE.SphereGeometry(2.4, 48, 32), glass, [1.2, 0.35, 0], [0.95, 1.12, 0.85], [0, -0.08, 0.22]);
-  addMesh(new THREE.ConeGeometry(2.6, 4.2, 48), glass, [0.25, -2.2, 0], [1, 1, 0.82], [0.1, 0.08, -0.12]);
-  addMesh(new THREE.SphereGeometry(2.9, 24, 18), wire, [0, -0.35, 0], [1.15, 1.38, 0.85], [0.2, 0.2, -0.2]);
+  const geometry = createProceduralHeartGeometry();
+  const heartMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x8a0f1a,
+    roughness: 0.35,
+    metalness: 0.05,
+    clearcoat: 1,
+    clearcoatRoughness: 0.25,
+    sheen: 1,
+    sheenColor: new THREE.Color(0xff3a4a),
+    sheenRoughness: 0.5,
+    emissive: 0x260006,
+    emissiveIntensity: 0.16,
+  });
+  const glowMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff2030,
+    transparent: true,
+    opacity: 0.12,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const veinMaterial = new THREE.MeshBasicMaterial({
+    color: 0x3a0008,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.22,
+  });
+
+  const heart = addMesh(geometry, heartMaterial, [0, -0.35, 0], [1.38, 1.38, 1.38], [0.08, 0.08, Math.PI]);
+  const glow = addMesh(geometry, glowMaterial, [0, -0.35, 0], [1.46, 1.46, 1.46], [0.08, 0.08, Math.PI]);
+  const veins = addMesh(geometry, veinMaterial, [0, -0.35, 0], [1.47, 1.47, 1.47], [0.08, 0.08, Math.PI]);
+
+  pulseTargets.push(heart, glow, veins);
+
+  addHeartVessels();
+}
+
+function createProceduralHeartGeometry() {
+  const shape = new THREE.Shape();
+  const x = 0;
+  const y = 0;
+  shape.moveTo(x, y + 0.5);
+  shape.bezierCurveTo(x, y + 0.5, x - 0.4, y + 1.2, x - 1.1, y + 1.2);
+  shape.bezierCurveTo(x - 2.2, y + 1.2, x - 2.2, y - 0.2, x - 2.2, y - 0.2);
+  shape.bezierCurveTo(x - 2.2, y - 0.9, x - 1.4, y - 1.8, x, y - 2.6);
+  shape.bezierCurveTo(x + 1.4, y - 1.8, x + 2.2, y - 0.9, x + 2.2, y - 0.2);
+  shape.bezierCurveTo(x + 2.2, y - 0.2, x + 2.2, y + 1.2, x + 1.1, y + 1.2);
+  shape.bezierCurveTo(x + 0.4, y + 1.2, x, y + 0.5, x, y + 0.5);
+
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    depth: 1.4,
+    bevelEnabled: true,
+    bevelSegments: 12,
+    steps: 4,
+    bevelSize: 0.5,
+    bevelThickness: 0.5,
+    curveSegments: 64,
+  });
+  geo.center();
+  geo.computeVertexNormals();
+  return geo;
+}
+
+function addHeartVessels() {
+  const vesselMaterial = new THREE.MeshStandardMaterial({
+    color: 0x00d9ff,
+    metalness: 0.35,
+    roughness: 0.25,
+    emissive: 0x003344,
+    emissiveIntensity: 0.65,
+  });
+  const arteryMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff2e46,
+    metalness: 0.28,
+    roughness: 0.28,
+    emissive: 0x44000a,
+    emissiveIntensity: 0.5,
+  });
+
+  const vesselSpecs = [
+    [[-0.9, 1.55, 0.2], [-1.15, 3.15, 0.25], 0.18, vesselMaterial],
+    [[0.18, 1.62, 0.15], [0.25, 3.35, 0.2], 0.2, vesselMaterial],
+    [[0.96, 1.44, 0.16], [1.75, 2.9, 0.18], 0.16, vesselMaterial],
+    [[1.1, 0.32, 0.38], [3.55, 0.95, 0.25], 0.07, arteryMaterial],
+    [[-0.95, -0.18, 0.42], [-3.1, -0.75, 0.25], 0.065, arteryMaterial],
+    [[0.25, -0.48, 0.48], [0.75, -2.8, 0.3], 0.06, arteryMaterial],
+  ];
+
+  vesselSpecs.forEach(([start, end, radius, material]) => {
+    const curve = new THREE.LineCurve3(new THREE.Vector3(...start), new THREE.Vector3(...end));
+    const tube = new THREE.TubeGeometry(curve, 24, radius, 12, false);
+    const mesh = new THREE.Mesh(tube, material);
+    mesh.userData.baseScale = new THREE.Vector3(1, 1, 1);
+    organGroup.add(mesh);
+    pulseTargets.push(mesh);
+  });
 }
 
 function buildPancreas(glass, wire) {
@@ -377,13 +471,31 @@ function addPathways(tone) {
 function buildParticles(tone) {
   particleGroup = new THREE.Group();
   scene.add(particleGroup);
-  const geom = new THREE.SphereGeometry(0.055, 8, 8);
-  const mat = new THREE.MeshBasicMaterial({ color: tone, transparent: true, opacity: 0.58 });
+  const isHeart = selected === 'Heart';
+  const geom = new THREE.SphereGeometry(isHeart ? 0.04 : 0.055, 8, 8);
+  const mat = new THREE.MeshBasicMaterial({
+    color: isHeart ? 0xff5a6a : tone,
+    transparent: true,
+    opacity: isHeart ? 0.6 : 0.58,
+  });
 
-  for (let i = 0; i < 130; i++) {
+  const count = isHeart ? 900 : 130;
+  for (let i = 0; i < count; i++) {
     const p = new THREE.Mesh(geom, mat);
-    p.position.set((Math.random() - 0.5) * 34, (Math.random() - 0.5) * 24, (Math.random() - 0.5) * 18);
-    p.scale.setScalar(0.6 + Math.random() * 2.3);
+    if (isHeart) {
+      const r = 6 + Math.random() * 8;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      p.position.set(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi)
+      );
+      p.scale.setScalar(0.65 + Math.random() * 1.45);
+    } else {
+      p.position.set((Math.random() - 0.5) * 34, (Math.random() - 0.5) * 24, (Math.random() - 0.5) * 18);
+      p.scale.setScalar(0.6 + Math.random() * 2.3);
+    }
     particleGroup.add(p);
   }
 }
@@ -398,15 +510,34 @@ function animate(time = 0) {
   requestAnimationFrame(animate);
   const t = time * 0.001;
   if (organGroup) {
-    organGroup.rotation.y = t * 0.28 + scrollProgress * Math.PI * 2.0 + mouseX * 0.12;
-    organGroup.rotation.x = Math.sin(t * 0.8) * 0.12 + scrollProgress * 0.5 - mouseY * 0.08;
-    organGroup.position.y = Math.sin(t * 0.9) * 0.22 - scrollProgress * 2.4;
-    const scale = 1 + Math.sin(t * 1.2) * 0.025 + scrollProgress * 0.12;
+    const isHeart = selected === 'Heart';
+    const beat =
+      Math.pow(Math.sin(t * 2.6) * 0.5 + 0.5, 8) * 0.18 +
+      Math.pow(Math.sin(t * 2.6 - 0.35) * 0.5 + 0.5, 12) * 0.1;
+    organGroup.rotation.y = isHeart
+      ? scrollProgress * Math.PI * 2.2 + t * 0.05 + mouseX * 0.1
+      : t * 0.28 + scrollProgress * Math.PI * 2.0 + mouseX * 0.12;
+    organGroup.rotation.x = isHeart
+      ? Math.sin(scrollProgress * Math.PI * 1.5) * 0.4 - mouseY * 0.08
+      : Math.sin(t * 0.8) * 0.12 + scrollProgress * 0.5 - mouseY * 0.08;
+    organGroup.position.y = isHeart
+      ? Math.sin(t * 0.9) * 0.18 - scrollProgress * 1.2
+      : Math.sin(t * 0.9) * 0.22 - scrollProgress * 2.4;
+    const scale = isHeart
+      ? 1 + scrollProgress * 0.05
+      : 1 + Math.sin(t * 1.2) * 0.025 + scrollProgress * 0.12;
     organGroup.scale.setScalar(scale);
+    if (isHeart) {
+      pulseTargets.forEach((mesh, index) => {
+        const base = mesh.userData.baseScale || new THREE.Vector3(1, 1, 1);
+        const pulse = 1 + beat * (index === 1 ? 1.22 : 1);
+        mesh.scale.set(base.x * pulse, base.y * pulse, base.z * pulse);
+      });
+    }
   }
   if (particleGroup) {
-    particleGroup.rotation.y = -t * 0.045;
-    particleGroup.rotation.x = t * 0.018;
+    particleGroup.rotation.y = selected === 'Heart' ? t * 0.03 : -t * 0.045;
+    particleGroup.rotation.x = selected === 'Heart' ? t * 0.01 : t * 0.018;
   }
   camera.position.y += ((scrollProgress * 8) - camera.position.y) * 0.035;
   renderer.render(scene, camera);
