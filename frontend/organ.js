@@ -547,20 +547,28 @@ function buildHeart(glass, wire) {
   const glowMaterial = new THREE.MeshBasicMaterial({
     color: 0xff2030,
     transparent: true,
-    opacity: 0.12,
+    opacity: 0.1,
     blending: THREE.AdditiveBlending,
+    depthTest: false,
     depthWrite: false,
   });
   const veinMaterial = new THREE.MeshBasicMaterial({
-    color: 0x3a0008,
+    color: 0xff7180,
     wireframe: true,
     transparent: true,
-    opacity: 0.22,
+    opacity: 0.18,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+    polygonOffsetUnits: -4,
   });
 
   const heart = addMesh(geometry, heartMaterial, [0, -0.35, 0], [1.38, 1.38, 1.38], [0.08, 0.08, 0]);
-  const glow = addMesh(geometry, glowMaterial, [0, -0.35, 0], [1.46, 1.46, 1.46], [0.08, 0.08, 0]);
-  const veins = addMesh(geometry, veinMaterial, [0, -0.35, 0], [1.47, 1.47, 1.47], [0.08, 0.08, 0]);
+  const glow = addMesh(geometry, glowMaterial, [0, -0.35, -0.03], [1.55, 1.55, 1.55], [0.08, 0.08, 0]);
+  const veins = addMesh(geometry, veinMaterial, [0, -0.35, 0.04], [1.505, 1.505, 1.505], [0.08, 0.08, 0]);
+  heart.renderOrder = 1;
+  glow.renderOrder = 0;
+  veins.renderOrder = 2;
 
   pulseTargets.push(heart, glow, veins);
 
@@ -739,7 +747,7 @@ function animate(time = 0) {
     if (isHeart) {
       pulseTargets.forEach((mesh, index) => {
         const base = mesh.userData.baseScale || new THREE.Vector3(1, 1, 1);
-        const pulse = 1 + beat * (index === 1 ? 1.22 : 1);
+        const pulse = 1 + beat * (index === 1 ? 0.55 : index === 2 ? 0.72 : 1);
         mesh.scale.set(base.x * pulse, base.y * pulse, base.z * pulse);
       });
     }
