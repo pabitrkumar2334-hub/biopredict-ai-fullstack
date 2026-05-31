@@ -491,6 +491,8 @@ function initScrollReveal(root = document) {
     '.footer-links'
   ].join(','));
 
+  prepareRollingText(root);
+
   const textItems = root.querySelectorAll([
     '.hero-content h1',
     '.hero-desc',
@@ -543,6 +545,56 @@ function initScrollReveal(root = document) {
   });
 
   revealItems.forEach((el) => observer.observe(el));
+}
+
+function prepareRollingText(root = document) {
+  const targets = root.querySelectorAll([
+    '.hero-content h1',
+    '.section-header h2',
+    '.section-label',
+    '.stat-number',
+    '.stat-label',
+    '.feature-title',
+    '.display-title',
+    '.cta-panel h2'
+  ].join(','));
+
+  targets.forEach((el) => {
+    if (
+      el.dataset.rollingPrepared === 'true' ||
+      el.closest('button, a, input, textarea, select')
+    ) {
+      return;
+    }
+
+    const text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+
+    const words = text.split(' ').map((word, index) => {
+      const safeWord = escapeHTML(word);
+      return `
+        <span class="rolling-word" style="--roll-index: ${index}">
+          <span class="rolling-stack">
+            <span>${safeWord}</span>
+            <span>${safeWord}</span>
+          </span>
+        </span>
+      `;
+    }).join('');
+
+    el.innerHTML = `<span class="rolling-text">${words}</span>`;
+    el.dataset.rollingPrepared = 'true';
+  });
+}
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
 }
 
 
