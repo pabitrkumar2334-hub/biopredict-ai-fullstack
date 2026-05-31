@@ -95,6 +95,11 @@ body.preloader-active {
   line-height: 0.95;
   text-align: center;
   text-transform: uppercase;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.45rem, 1.8vw, 1.35rem);
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
@@ -102,6 +107,25 @@ body.preloader-active {
     opacity 0.35s ease,
     transform 0.55s cubic-bezier(0.19, 1, 0.22, 1),
     filter 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.preloader-title-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 120%, 0) rotateX(16deg);
+  filter: blur(16px);
+  text-shadow: 0 0 28px rgba(255, 255, 255, 0.2);
+  will-change: opacity, transform, filter;
+  transition:
+    opacity 0.42s ease,
+    transform 0.78s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 0.78s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.preloader-title-word.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotateX(0deg);
+  filter: blur(0);
 }
 
 .double-stair-loader {
