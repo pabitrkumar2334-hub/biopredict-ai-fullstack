@@ -443,6 +443,7 @@ function initWordPreloader() {
   const finishPreloader = () => {
     preloader.classList.add('is-hidden');
     preloader.style.display = 'none';
+    preloader.style.visibility = 'hidden';
     document.body.classList.remove('preloader-active');
   };
 
@@ -456,6 +457,7 @@ function initWordPreloader() {
 
   window.setTimeout(() => {
     preloader.classList.add('is-exiting');
+    preloader.style.background = 'transparent';
 
     window.setTimeout(() => {
       finishPreloader();
