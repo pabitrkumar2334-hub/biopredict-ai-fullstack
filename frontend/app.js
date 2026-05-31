@@ -446,8 +446,8 @@ function initWordPreloader() {
       preloader.classList.add('is-hidden');
       preloader.style.display = 'none';
       document.body.classList.remove('preloader-active');
-    }, 1350);
-  }, 950);
+    }, 1950);
+  }, 850);
 }
 
 function initScrollReveal(root = document) {
