@@ -276,6 +276,8 @@ function initOrganScrollReveal(root = document) {
     '.heart-story-outro > div'
   ].join(','));
 
+  prepareOrganRollingText(root);
+
   const textItems = root.querySelectorAll([
     '.organ-hero-copy h1',
     '.organ-hero-copy p',
@@ -329,6 +331,56 @@ function initOrganScrollReveal(root = document) {
   });
 
   revealItems.forEach((el) => observer.observe(el));
+}
+
+function prepareOrganRollingText(root = document) {
+  const targets = root.querySelectorAll([
+    '.organ-hero-copy h1',
+    '.section-header h2',
+    '.section-label',
+    '.organ-signal-card h3',
+    '.organ-sticky-copy h2',
+    '.organ-beat-card h3',
+    '.heart-chapter-card h2',
+    '.heart-story-outro h2'
+  ].join(','));
+
+  targets.forEach((el) => {
+    if (
+      el.dataset.rollingPrepared === 'true' ||
+      el.closest('button, a, input, textarea, select')
+    ) {
+      return;
+    }
+
+    const text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+
+    const words = text.split(' ').map((word, index) => {
+      const safeWord = escapeOrganHTML(word);
+      return `
+        <span class="rolling-word" style="--roll-index: ${index}">
+          <span class="rolling-stack">
+            <span>${safeWord}</span>
+            <span>${safeWord}</span>
+          </span>
+        </span>
+      `;
+    }).join('');
+
+    el.innerHTML = `<span class="rolling-text">${words}</span>`;
+    el.dataset.rollingPrepared = 'true';
+  });
+}
+
+function escapeOrganHTML(value) {
+  return value.replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
 }
 
 function updateHeartStoryProgress() {
