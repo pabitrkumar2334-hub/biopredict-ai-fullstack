@@ -336,6 +336,67 @@ body.preloader-active {
   transform: translate3d(0, 0, 0);
 }
 
+.rolling-text {
+  display: inline;
+}
+
+.rolling-word {
+  display: inline-block;
+  height: 1.08em;
+  overflow: hidden;
+  vertical-align: -0.08em;
+  margin-right: 0.22em;
+  perspective: 900px;
+}
+
+.rolling-stack {
+  display: flex;
+  flex-direction: column;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 0.88s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 0.88s cubic-bezier(0.19, 1, 0.22, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + (var(--roll-index, 0) * 62ms));
+  will-change: transform, filter;
+}
+
+.rolling-stack span {
+  display: block;
+  min-height: 1.08em;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.rolling-stack span:first-child {
+  opacity: 0.18;
+  transform: rotateX(-38deg) translateY(8%);
+  filter: blur(4px);
+}
+
+.rolling-stack span:last-child {
+  opacity: 1;
+  transform: rotateX(0deg);
+}
+
+.reveal-on-scroll.is-visible .rolling-stack {
+  transform: translate3d(0, -50%, 0);
+  filter: blur(0);
+}
+
+.hero-content h1 .rolling-word:nth-last-child(-n + 4) .rolling-stack span:last-child {
+  color: var(--accent-cyan);
+  text-shadow: var(--glow-cyan);
+}
+
+.stat-number .rolling-word {
+  margin-right: 0;
+}
+
+.stat-number .rolling-stack span:last-child,
+.section-label .rolling-stack span:last-child {
+  color: var(--accent-cyan);
+}
+
 .feature-card.reveal-on-scroll,
 .stat-card.reveal-on-scroll,
 .cta-panel.reveal-on-scroll,
