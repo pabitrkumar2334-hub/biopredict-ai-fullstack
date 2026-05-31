@@ -427,10 +427,30 @@ function animate(time) {
 
 // Launch engine on window load
 window.addEventListener('DOMContentLoaded', () => {
+  initWordPreloader();
   initWebGL();
   initPlayground();
   initScrollReveal();
 });
+
+function initWordPreloader() {
+  const preloader = document.getElementById('site-preloader');
+  if (!preloader) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.body.classList.add('preloader-active');
+
+  const startExit = () => {
+    preloader.classList.add('is-exiting');
+    window.setTimeout(() => {
+      preloader.classList.add('is-hidden');
+      preloader.style.display = 'none';
+      document.body.classList.remove('preloader-active');
+    }, prefersReducedMotion ? 100 : 1050);
+  };
+
+  window.setTimeout(startExit, prefersReducedMotion ? 250 : 3650);
+}
 
 function initScrollReveal(root = document) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
