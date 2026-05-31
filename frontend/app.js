@@ -437,8 +437,38 @@ function initWordPreloader() {
   const preloader = document.getElementById('site-preloader');
   if (!preloader) return;
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const words = Array.from(preloader.querySelectorAll('.preloader-word'));
   document.body.classList.add('preloader-active');
+
+  if (!words.length) {
+    preloader.style.display = 'none';
+    document.body.classList.remove('preloader-active');
+    return;
+  }
+
+  let index = 0;
+  const wordHold = 520;
+  const wordExit = 260;
+
+  const showWord = () => {
+    words.forEach((word) => word.classList.remove('is-active', 'is-leaving'));
+    const current = words[index];
+    current.classList.add('is-active');
+
+    window.setTimeout(() => {
+      current.classList.remove('is-active');
+      current.classList.add('is-leaving');
+    }, wordHold);
+
+    window.setTimeout(() => {
+      index += 1;
+      if (index < words.length) {
+        showWord();
+      } else {
+        startExit();
+      }
+    }, wordHold + wordExit);
+  };
 
   const startExit = () => {
     preloader.classList.add('is-exiting');
@@ -446,10 +476,10 @@ function initWordPreloader() {
       preloader.classList.add('is-hidden');
       preloader.style.display = 'none';
       document.body.classList.remove('preloader-active');
-    }, prefersReducedMotion ? 100 : 1050);
+    }, 1050);
   };
 
-  window.setTimeout(startExit, prefersReducedMotion ? 250 : 3650);
+  showWord();
 }
 
 function initScrollReveal(root = document) {
