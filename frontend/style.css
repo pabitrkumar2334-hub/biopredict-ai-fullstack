@@ -76,6 +76,10 @@ body.preloader-active {
   pointer-events: all;
 }
 
+.site-preloader.is-exiting {
+  background: transparent;
+}
+
 .site-preloader.is-hidden {
   pointer-events: none;
 }
@@ -106,7 +110,7 @@ body.preloader-active {
   z-index: 5;
   display: grid;
   grid-template-rows: 1fr 1fr;
-  background: #000;
+  background: transparent;
 }
 
 .stair-row {
@@ -117,9 +121,14 @@ body.preloader-active {
 
 .stair-row span {
   display: block;
-  background: #000;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 22%),
+    linear-gradient(180deg, #000 0%, #030303 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    inset 0 -1px 0 rgba(0, 240, 255, 0.08);
   transform: translateY(0);
-  will-change: transform;
+  will-change: transform, filter;
 }
 
 .site-preloader.is-exiting .preloader-title {
@@ -129,27 +138,53 @@ body.preloader-active {
 }
 
 .site-preloader.is-exiting .stair-row-top span {
-  animation: stairTopExit 0.95s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: stairTopExit 1.35s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
 .site-preloader.is-exiting .stair-row-bottom span {
-  animation: stairBottomExit 0.95s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: stairBottomExit 1.35s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
-.site-preloader.is-exiting .stair-row span:nth-child(1) { animation-delay: 0ms; }
-.site-preloader.is-exiting .stair-row span:nth-child(2) { animation-delay: 70ms; }
-.site-preloader.is-exiting .stair-row span:nth-child(3) { animation-delay: 140ms; }
-.site-preloader.is-exiting .stair-row span:nth-child(4) { animation-delay: 210ms; }
-.site-preloader.is-exiting .stair-row span:nth-child(5) { animation-delay: 280ms; }
+.site-preloader.is-exiting .stair-row-top span:nth-child(1) { animation-delay: 0ms; }
+.site-preloader.is-exiting .stair-row-top span:nth-child(2) { animation-delay: 90ms; }
+.site-preloader.is-exiting .stair-row-top span:nth-child(3) { animation-delay: 180ms; }
+.site-preloader.is-exiting .stair-row-top span:nth-child(4) { animation-delay: 270ms; }
+.site-preloader.is-exiting .stair-row-top span:nth-child(5) { animation-delay: 360ms; }
+
+.site-preloader.is-exiting .stair-row-bottom span:nth-child(1) { animation-delay: 360ms; }
+.site-preloader.is-exiting .stair-row-bottom span:nth-child(2) { animation-delay: 270ms; }
+.site-preloader.is-exiting .stair-row-bottom span:nth-child(3) { animation-delay: 180ms; }
+.site-preloader.is-exiting .stair-row-bottom span:nth-child(4) { animation-delay: 90ms; }
+.site-preloader.is-exiting .stair-row-bottom span:nth-child(5) { animation-delay: 0ms; }
 
 @keyframes stairTopExit {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-105%); }
+  0% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+  42% {
+    transform: translateY(0);
+    filter: brightness(1.18);
+  }
+  100% {
+    transform: translateY(-112%);
+    filter: brightness(0.8);
+  }
 }
 
 @keyframes stairBottomExit {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(105%); }
+  0% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+  42% {
+    transform: translateY(0);
+    filter: brightness(1.18);
+  }
+  100% {
+    transform: translateY(112%);
+    filter: brightness(0.8);
+  }
 }
 
 .preloader-word-stage {
